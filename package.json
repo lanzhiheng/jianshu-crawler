@@ -1,0 +1,10 @@
+{
+  "name": "jianshu-crawler",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "lanzhiheng",
+  "license": "MIT",
+  "dependencies": {
+    "crawler": "^1.0.4"
+  }
+}
