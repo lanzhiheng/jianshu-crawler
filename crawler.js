@@ -76,6 +76,8 @@ let crawlerArticle = new Crawler({
         date: new Date(date),
         articleBody
       }
+
+      articles.push(article)
     }
     done();
   }
@@ -84,7 +86,7 @@ let crawlerArticle = new Crawler({
 
 
 // 第一个爬虫结束之后开启第二个爬虫n
-crawlerMeta.on('drain',function(){
+crawlerMeta.on('drain', () => {
   // console.log(articlesLink.length);
   let linkQueue = []
   articlesLink.forEach((link) => {
@@ -93,3 +95,9 @@ crawlerMeta.on('drain',function(){
 
   crawlerArticle.queue(linkQueue);
 });
+
+
+// 打印所有实体
+crawlerArticle.on('drain', () => {
+  console.log(articles);
+})
