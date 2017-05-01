@@ -5,6 +5,10 @@
   "author": "lanzhiheng",
   "license": "MIT",
   "dependencies": {
-    "crawler": "^1.0.4"
+    "crawler": "^1.0.4",
+    "to-markdown": "^3.0.4"
+  },
+  "scripts": {
+    "start": "node crawler.js"
   }
 }
