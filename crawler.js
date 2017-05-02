@@ -1,12 +1,29 @@
 const Crawler = require('crawler');
 var toMarkdown = require('to-markdown');
+var mongoose = require('mongoose');
+var slug = require('limax');
+var md = require("node-markdown").Markdown;
+mongoose.connect('mongodb://localhost:/text');
+
+var Post = mongoose.model('Post', {
+  title: String,
+  state: String,
+  publishedDate: Date,
+  image: String,
+  content: {
+    brief: String,
+    extended: Object,
+  },
+  slug: String,
+  anthology: String
+})
 
 let articlesLink = [];
 let articles = []
 
 // 获取所有的文章链接
 let crawlerMeta = new Crawler({
-  maxConnections: 10,
+  maxConnections: 1,
   callback: (error, res, done) => {
     if (error) {
       console.log(error);
@@ -50,7 +67,7 @@ crawlerMeta.queue(queue)
 
 
 let crawlerArticle = new Crawler({
-  maxConnections: 10,
+  maxConnections: 1,
   callback: (error, res, done) => {
     if (error) {
       console.log(error);
@@ -62,6 +79,8 @@ let crawlerArticle = new Crawler({
       let title = $article.find('.title').text();
       let date = $article.find('.publish-time').text().replace('*', '');
       let $content = $article.find('.show-content');
+      let $footer = $article.find('.show-foot');
+      let anthology = $footer.find('.notebook span').text();
 
       // 删除图片的标题
       $content.find('.image-caption').remove();
@@ -74,7 +93,8 @@ let crawlerArticle = new Crawler({
       article = {
         title,
         date: new Date(date),
-        articleBody
+        articleBody,
+        anthology
       }
 
       articles.push(article)
@@ -99,5 +119,29 @@ crawlerMeta.on('drain', () => {
 
 // 打印所有实体
 crawlerArticle.on('drain', () => {
-  console.log(articles);
+  articles.forEach((item) => {
+    let post = {
+      title: item.title,
+      state: 'published',
+      publishedDate: item.date,
+      image: '',
+      content: {
+        brief: '',
+        extended: {
+          html: md(item.articleBody),
+          md: item.articleBody
+        },
+      },
+      slug: slug(item.title, { tone: false}),
+      anthology: item.anthology
+    }
+    var postInput = new Post(post);
+    postInput.save((err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Awesome");
+      }
+    })
+  })
 })
