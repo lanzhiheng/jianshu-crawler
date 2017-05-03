@@ -1,29 +1,13 @@
 const Crawler = require('crawler');
 var toMarkdown = require('to-markdown');
-var mongoose = require('mongoose');
-var slug = require('limax');
-var md = require("node-markdown").Markdown;
-mongoose.connect('mongodb://localhost:/text');
-
-var Post = mongoose.model('Post', {
-  title: String,
-  state: String,
-  publishedDate: Date,
-  image: String,
-  content: {
-    brief: String,
-    extended: Object,
-  },
-  slug: String,
-  anthology: String
-})
+let util = require('./utils');
 
 let articlesLink = [];
 let articles = []
 
 // 获取所有的文章链接
 let crawlerMeta = new Crawler({
-  maxConnections: 1,
+  maxConnections: 10,
   callback: (error, res, done) => {
     if (error) {
       console.log(error);
@@ -117,31 +101,10 @@ crawlerMeta.on('drain', () => {
 });
 
 
-// 打印所有实体
+// 保存到数据库
 crawlerArticle.on('drain', () => {
   articles.forEach((item) => {
-    let post = {
-      title: item.title,
-      state: 'published',
-      publishedDate: item.date,
-      image: '',
-      content: {
-        brief: '',
-        extended: {
-          html: md(item.articleBody),
-          md: item.articleBody
-        },
-      },
-      slug: slug(item.title, { tone: false}),
-      anthology: item.anthology
-    }
-    var postInput = new Post(post);
-    postInput.save((err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Awesome");
-      }
-    })
+    util.saveAnthology(item.anthology)
+    util.savePost(item);
   })
 })
