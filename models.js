@@ -5,11 +5,8 @@ var Post = mongoose.model('Post', {
   title: String,
   state: String,
   publishedDate: Date,
-  image: String,
-  content: {
-    brief: String,
-    extended: Object,
-  },
+  brief: String,
+  content: String,
   slug: String,
   anthology: String
 })
@@ -17,8 +14,7 @@ var Post = mongoose.model('Post', {
 // 定义文集实体
 Anthology = mongoose.model('Anthology', {
   _id: String,
-  name: String,
-  key: String
+  name: String
 })
 
 

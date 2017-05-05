@@ -7,7 +7,7 @@ let articles = []
 
 // 获取所有的文章链接
 let crawlerMeta = new Crawler({
-  maxConnections: 10,
+  maxConnections: 1,
   callback: (error, res, done) => {
     if (error) {
       console.log(error);

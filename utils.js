@@ -19,14 +19,8 @@ const savePost = (post) => {
     title: post.title,
     state: 'published',
     publishedDate: post.date,
-    image: '',
-    content: {
-      brief: '',
-      extended: {
-        html: md(post.articleBody),
-        md: post.articleBody
-      },
-    },
+    brief: '',
+    content: post.articleBody,
     slug: slug(post.title, { tone: false}),
     anthology: slug(post.anthology, {tone: false})
   }
@@ -43,11 +37,12 @@ const savePost = (post) => {
 
 // 保存文集数据
 const saveAnthology = (anthologyTitle) => {
+  let id = slug(anthologyTitle, {tone: false});
+
   let anthology = {
     // 固定slug
-    _id: slug(anthologyTitle, {tone: false}),
+    _id: id,
     name: anthologyTitle,
-    key: slug(anthologyTitle, {tone: false})
   }
 
   let anthologyItem = new Anthology(anthology);
