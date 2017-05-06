@@ -14,7 +14,8 @@ var Post = mongoose.model('Post', {
 // 定义文集实体
 Anthology = mongoose.model('Anthology', {
   _id: mongoose.Schema.Types.ObjectId,
-  name: String
+  name: String,
+  key: String
 })
 
 

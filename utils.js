@@ -50,6 +50,7 @@ const saveAnthology = (anthologyTitle, cb) => {
       // 固定slug
       _id: _id,
       name: anthologyTitle,
+      key: slug(anthologyTitle, {tone: false})
     }
 
     let anthologyItem = new Anthology(anthology);
