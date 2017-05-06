@@ -8,12 +8,12 @@ var Post = mongoose.model('Post', {
   brief: String,
   content: String,
   slug: String,
-  anthology: String
+  anthology: mongoose.Schema.Types.ObjectId
 })
 
 // 定义文集实体
 Anthology = mongoose.model('Anthology', {
-  _id: String,
+  _id: mongoose.Schema.Types.ObjectId,
   name: String
 })
 

@@ -104,7 +104,8 @@ crawlerMeta.on('drain', () => {
 // 保存到数据库
 crawlerArticle.on('drain', () => {
   articles.forEach((item) => {
-    util.saveAnthology(item.anthology)
-    util.savePost(item);
+    util.saveAnthology(item.anthology, () => {
+      util.savePost(item);
+    })
   })
 })

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/xblue');
 
 // 拼音
 var slug = require('limax');
@@ -13,6 +13,10 @@ const Entity = require('./models');
 const Post = Entity.Post;
 const Anthology = Entity.Anthology;
 
+
+let anthologyCache = {
+
+};
 // 保存文章数据
 const savePost = (post) => {
   let postItem = {
@@ -22,7 +26,7 @@ const savePost = (post) => {
     brief: '',
     content: post.articleBody,
     slug: slug(post.title, { tone: false}),
-    anthology: slug(post.anthology, {tone: false})
+    anthology: anthologyCache[post.anthology]
   }
 
   let postInput = new Post(postItem);
@@ -36,23 +40,28 @@ const savePost = (post) => {
 }
 
 // 保存文集数据
-const saveAnthology = (anthologyTitle) => {
-  let id = slug(anthologyTitle, {tone: false});
+const saveAnthology = (anthologyTitle, cb) => {
+  console.log(anthologyCache);
+  if (anthologyCache[anthologyTitle] === undefined) {
+    let _id = mongoose.Types.ObjectId();
+    anthologyCache[anthologyTitle] = _id;
 
-  let anthology = {
-    // 固定slug
-    _id: id,
-    name: anthologyTitle,
-  }
-
-  let anthologyItem = new Anthology(anthology);
-  anthologyItem.save((err) => {
-    if (err) {
-      // console.log(err);
-    } else {
-      console.log("Good");
+    let anthology = {
+      // 固定slug
+      _id: _id,
+      name: anthologyTitle,
     }
-  })
+
+    let anthologyItem = new Anthology(anthology);
+    anthologyItem.save((err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Good");
+      }
+    })
+  }
+  cb();
 }
 
 module.exports = {
